@@ -47,6 +47,9 @@
         "key-spacing": [0, { "beforeColon": false, "afterColon": true }],
         "react/jsx-uses-react": [2],
         "brace-style": [2, "1tbs"],
-        "comma-spacing": 2,
+        "comma-spacing": [2],
+        "space-before-function-paren": [2],
+        "keyword-spacing": [2],
+        "object-curly-spacing": [2]
     }
 }
