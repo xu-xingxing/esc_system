@@ -19,6 +19,9 @@ export default {
         'title': '尾气'
     },
     'fuel':{
-        'title': '燃料' 
+        'title': '燃料'
+    },
+    'img':{
+        'title': '图片'
     }
-}
+};

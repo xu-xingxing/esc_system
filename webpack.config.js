@@ -30,14 +30,26 @@ module.exports = {
                         options: {
                             presets: ['@babel/preset-react'],
                             plugins: [
-                                ["import", {
-                                    "libraryName": "antd",
-                                    "libraryDirectory": "lib",   // default: lib
-                                    "style": false
-                                }], 
-                                ['@babel/plugin-proposal-decorators', {
-                                    'legacy': true
-                                }]
+                                [
+                                    'import', 
+                                    {
+                                        'libraryName': 'antd',
+                                        'libraryDirectory': 'lib',   // default: lib
+                                        'style': false
+                                    }
+                                ],
+                                [
+                                    '@babel/plugin-proposal-decorators', 
+                                    {
+                                        'legacy': true
+                                    }
+                                ],
+                                [
+                                    '@babel/plugin-proposal-class-properties',
+                                    {
+                                        'loose': true
+                                    }
+                                ]
                             ]
                         }
                     },
@@ -54,9 +66,9 @@ module.exports = {
             errors: true
         },
         proxy: {
-            "/api": {
-                target: "http://192.168.2.250:3000",
-                pathRewrite: {"^/api" : ""}
+            '/api': {
+                target: 'http://192.168.2.250:3000',
+                pathRewrite: { '^/api': '' }
             }
         }
     }

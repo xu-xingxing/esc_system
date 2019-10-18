@@ -1,4 +1,4 @@
-export default {
+﻿export default {
     //命名空间
     namespace:'bigtable',
     //数据
@@ -10,6 +10,9 @@ export default {
 
     },
     effects:{
+        *getColumnsFromLocalStorage () {
+		
 
+        }
     }
 };

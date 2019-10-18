@@ -1,22 +1,22 @@
 import React from 'react';
 import {connect} from 'dva';
-import { Layout, Menu, Breadcrumb, Icon } from 'antd';
+import {Layout, Menu, Breadcrumb, Icon} from 'antd';
 
-const { SubMenu } = Menu;
-const { Header, Content, Sider } = Layout;
+const {SubMenu} = Menu;
+const {Header, Content, Sider} = Layout;
 
 import BigTable from './views/salecar/bigtable/BigTable.js';
 export default @connect(
 )
 class App extends React.Component {
-    constructor(){
+    constructor () {
         super();
         this.state = {};
     }
-    async componentWillMount() {
+    async componentWillMount () {
         this.props.dispatch({'type': 'esc/INITSAGA'});
     }
-    render() {
+    render () {
         return (
             <div>
                 <Layout>
@@ -26,7 +26,7 @@ class App extends React.Component {
                             theme="dark"
                             mode="horizontal"
                             defaultSelectedKeys={['2']}
-                            style={{ lineHeight: '64px' }}
+                            style={{lineHeight: '64px'}}
                         >
                             <Menu.Item key="1">nav 1</Menu.Item>
                             <Menu.Item key="2">nav 2</Menu.Item>
@@ -34,12 +34,12 @@ class App extends React.Component {
                         </Menu>
                     </Header>
                     <Layout>
-                        <Sider width={200} style={{ background: '#fff' }}>
+                        <Sider width={200} style={{background: '#fff'}}>
                             <Menu
                                 mode="inline"
                                 defaultSelectedKeys={['1']}
                                 defaultOpenKeys={['sub1']}
-                                style={{ height: '100%', borderRight: 0 }}
+                                style={{height: '100%', borderRight: 0}}
                             >
                                 <SubMenu
                                     key="sub1"
@@ -85,8 +85,8 @@ class App extends React.Component {
                                 </SubMenu>
                             </Menu>
                         </Sider>
-                        <Layout style={{ padding: '0 24px 24px' }}>
-                            <Breadcrumb style={{ margin: '16px 0' }}>
+                        <Layout style={{padding: '0 24px 24px'}}>
+                            <Breadcrumb style={{margin: '16px 0'}}>
                                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                                 <Breadcrumb.Item>List</Breadcrumb.Item>
                                 <Breadcrumb.Item>App</Breadcrumb.Item>
