@@ -23,5 +23,14 @@ export default {
     },
     'image':{
         'title': '图片'
+    },
+    'price':{
+        'title': '价格'
+    },
+    'buydate':{
+        'title':'购买日期'
+    },
+    'km':{
+        'title':'公里数'
     }
 };

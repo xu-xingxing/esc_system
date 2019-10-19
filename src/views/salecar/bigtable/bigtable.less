@@ -7,7 +7,6 @@
     }
 }
 .onesmallelementbox {
-    overflow: hidden;
     padding-bottom: 6px;
     .onesmallelement {
         float: left;
@@ -15,7 +14,24 @@
         border: 1px solid rgb(13, 110, 236);
         border-radius: 4px;
         margin-right: 10px;
+        margin-bottom: 10px;
         cursor: move;
+        position: relative;
+        @w: 18px;
+        b{
+            box-sizing: border-box;
+            position: absolute;
+            width: @w;
+            height: @w;
+            border-radius: 50%;
+            border: 2px solid #333;
+            color: red;
+            right: -@w/2;
+            top: -@w/2;
+            text-align: center;
+            line-height: @w;
+            font-size: 18px;
+        }
     }
 }
 .beixuanbox {
