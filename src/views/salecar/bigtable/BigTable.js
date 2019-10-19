@@ -12,23 +12,16 @@ import columnsMap from './columnsMap';
     })
 )
 export default class BigTable extends Component {
+    //组件即将上树
+    componentWillMount () {
+        this.props.dispatch({'type': 'bigtable/getColumnsFromLocalStorage'});
+    }
     render () {
-        //试着从本地存储中读取column字段
-        const columnsFromLocalStore = JSON.parse(localStorage.getItem('columns'));
-        //如果这个字段读取出来时null,表示用户第一次来本网站或者清空缓存
-        if (columnsFromLocalStore === null) {
-            //第一次进入，给用户本地赋予一个值
-            localStorage.setItem('columns', JSON.stringify(['image', 'id', 'brand', 'series', 'color']));
-        }
-        //再次从本地存储列表存储信息，并转换
-        const columnArr = JSON.parse(localStorage.getItem('columns'));
-        //将数据字典转为数组
-        // console.log(columnsMap);
         return (
             <div>
                 <Table
                     columns={
-                        columnArr.map(item=>({
+                        this.props.columnArr.map(item=>({
                             'key':item,
                             'dataIndex':item,
                             ...columnsMap[item]
