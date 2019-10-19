@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import _ from 'lodash';
-import {Icon} from 'antd';
+import {Icon, Button} from 'antd';
 
 import OneSmallElement from './OneSmallElement.js';
 import columnsMap from './columnsMap.js';
@@ -20,10 +20,10 @@ export default class ModalInner extends Component {
         //如果不在，推入benxuanArr数组
 
         beixuanArr = _.difference(Object.keys(columnsMap), props.columnArr);
-        console.log(beixuanArr);
+        // console.log(beixuanArr);
 
         this.state = {
-            'columnArr': props.columnArr,
+            'columnArr': props.columnArr.slice(),
             'beixuanArr': beixuanArr
         };
     }
@@ -86,6 +86,16 @@ export default class ModalInner extends Component {
                     }
                 </div>
                 <div style={{'clear':'both'}}></div>
+                <div>
+                    <Button
+                        onClick={ ()=>{
+                            this.props.cancelHandler(this.state.columnArr);
+                        }}
+                    >取消</Button>
+                    <Button onClick={ ()=>{
+                        this.props.okHandler(this.state.columnArr);
+                    }}>确定</Button>
+                </div>
             </div>
         );
     }

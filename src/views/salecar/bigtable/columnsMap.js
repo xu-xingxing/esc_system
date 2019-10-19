@@ -1,3 +1,4 @@
+import React from 'react';
 //暴露一个json，作为table的columns映射的字典
 export default {
     'id':{
@@ -22,7 +23,12 @@ export default {
         'title': '燃料'
     },
     'image':{
-        'title': '图片'
+        'title': '图片',
+        'render': (txt, {id})=>{
+            return <div>
+                <img key={txt} src={`/api/images/carimages_small/${id}/view/${txt}`}/>
+            </div>;
+        }
     },
     'price':{
         'title': '价格'
