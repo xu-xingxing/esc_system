@@ -21,7 +21,7 @@ export default {
     'fuel':{
         'title': '燃料'
     },
-    'img':{
+    'image':{
         'title': '图片'
     }
 };
