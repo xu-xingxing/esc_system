@@ -1,83 +1,94 @@
 import React, {Component} from 'react';
-import {connect} from 'dva';
-import {Table, Button, Modal} from 'antd';
+import {Table, Button, Modal, Checkbox, Radio, Tag} from 'antd';
 
-//引入columns的数据字典
-import columnsMap from './columnsMap';
+const ButtonGroup = Button.Group;
+import {connect} from 'dva';
 import './bigtable.less';
 import ModalInner from './ModalInner.js';
+import FilterBox from './FilterBox.js';
+import Tags from './Tags.js';
 
+//引入数据字典
+import columnsMap from './columnsMap';
 
 @connect(
-    ({bigtable})=>({
+    ({bigtable}) => ({
         ...bigtable
     })
 )
 export default class BigTable extends Component {
-    constructor () {
+    constructor (props) {
         super();
         this.state = {
-            'showChangeColumnModal':false
+            isShowModal: false
         };
     }
-    //组件即将上树
     componentWillMount () {
         this.props.dispatch({'type': 'bigtable/getColumnsFromLocalStorage'});
-        this.props.dispatch({'type': 'bigtable/init'});
+        this.props.dispatch({'type': 'bigtable/initTableData'});
     }
     render () {
         return (
             <div>
                 <Modal
-                    title='请调整表格列的显示'
-                    visible={this.state.showChangeColumnModal}
-                    footer={null}
-                    onCancel={()=>{
+                    title='请您选择需要看的列'
+                    visible={this.state.isShowModal}
+                    onCancel={() => {
                         this.setState({
-                            showChangeColumnModal:false
+                            isShowModal: false
                         });
                     }}
+                    footer={null}
                 >
                     <ModalInner
-                        ref="modalinner"
-                        okHandler={(columnArr)=>{
-                            //点击确定按钮之后做的事情
-                            this.props.dispatch({'type':'bigtable/setColunmsToLocalStorage', columnArr});
+                        okHandle={(columns) => {
+                            this.props.dispatch({'type': 'bigtable/setColumnsToLocalStorage', columns});
                             this.setState({
-                                showChangeColumnModal:false
+                                isShowModal: false
                             });
                         }}
-                        cancelHandler={()=>{
-                            //点击取消按钮之后做的事情
+                        cancelHandle={() => {
                             this.setState({
-                                showChangeColumnModal:false
+                                isShowModal: false
                             });
                         }}
                     />
                 </Modal>
-                <div className="btn_box">
+                <p className="btn_box">
                     <Button
                         type="primary"
                         className="btn"
                         shape="circle"
                         icon="setting"
-                        onClick={()=>{
+                        onClick={() => {
                             this.setState({
-                                showChangeColumnModal:true
+                                isShowModal: true
                             });
                         }}
                     />
-                </div>
+                </p>
+                <Tags/>
+                <FilterBox />
                 <Table
-                    rowKey="id"
+                    rowKey='id'
                     columns={
-                        this.props.columnArr.map(item=>({
-                            'key':item,
-                            'dataIndex':item,
-                            ...columnsMap[item]
-                        }))
+                        this.props.columns.map((item) => {
+                            return {
+                                'key': item,
+                                'dataIndex': item,
+                                ...columnsMap[item]
+                            };
+                        })
                     }
                     dataSource={this.props.results}
+                    pagination={{
+                        'current': this.props.current,
+                        'total': this.props.total,
+                        'pageSize': 10,
+                        'onChange': (current) => {
+                            this.props.dispatch({'type': 'bigtable/changeCurrentHandle', current});
+                        }
+                    }}
                 />
             </div>
         );

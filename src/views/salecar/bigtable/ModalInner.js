@@ -3,98 +3,99 @@ import {connect} from 'dva';
 import _ from 'lodash';
 import {Icon, Button} from 'antd';
 
+import columnsMap from './columnsMap';
 import OneSmallElement from './OneSmallElement.js';
-import columnsMap from './columnsMap.js';
 
 @connect(
-    ({bigtable}) => ({
+    ({bigtable})=>({
         ...bigtable
     })
 )
 export default class ModalInner extends Component {
     constructor (props) {
         super();
-        //这里筹备beixuanArr的初始值
-        let beixuanArr = [];
-        //遍历数据字典，看看遍历到的这个项的键名，在不在装饰器的props.columnArr数组中
-        //如果不在，推入benxuanArr数组
-
-        beixuanArr = _.difference(Object.keys(columnsMap), props.columnArr);
-        // console.log(beixuanArr);
-
         this.state = {
-            'columnArr': props.columnArr.slice(),
-            'beixuanArr': beixuanArr
+            'columns':props.columns.slice(),
+            'beixuanArr':[]
         };
     }
-    delOneItem (english) {
-        console.log('儿子，你要del');
+    //删除已有列中的一项， 给备选列中增加一项
+    delItemFromColumns (english) {
         this.setState({
-            'columnArr':this.state.columnArr.filter(item => item !== english),
-            'beixuanArr':[...this.state.beixuanArr, english]
+            columns:this.state.columns.filter(item=>{
+                return item !== english;
+            }),
+            beixuanArr:[...this.state.beixuanArr, english]
         });
     }
     render () {
+        //根据数据字典，使用lodash中的difference方法，算出备选的数组
+        this.state.beixuanArr = _.difference(Object.keys(columnsMap), this.state.columns);
         return (
             <div>
-                <p>当前为您展示的列（可以拖拽排序）：</p>
+                <p>以下是页面已经有的列</p>
                 <div className="onesmallelementbox">
                     {
-                        this.state.columnArr.map((item, i)=>{
+                        this.state.columns.map((item, i)=>{
                             return (
                                 <OneSmallElement
                                     key={i}
-                                    onSortItems={
-                                        (columnArr)=>{
-                                            this.setState({
-                                                columnArr
-                                            });
-                                        }
-                                    }
-                                    items={this.state.columnArr}
-                                    sortId={i}
-                                    chinese={columnsMap[item].title}
+                                    onSortItems={(columns)=>{
+                                        this.setState({
+                                            columns
+                                        });
+                                    }}
+                                    items={this.state.columns}
                                     english={item}
-                                    delOneItem={this.delOneItem.bind(this)}
-                                >
-                                </OneSmallElement>
+                                    chinese={columnsMap[item].title}
+                                    sortId={i}
+                                    delItemFromColumns={this.delItemFromColumns.bind(this)}
+                                ></OneSmallElement>
                             );
                         })
                     }
+                    <div style={{'clear':'both'}}></div>
                 </div>
-                <div style={{'clear':'both'}}></div>
-                <p>备选列</p>
+                <p>以下是备选的列</p>
                 <div className="beixuanbox">
                     {
-                        this.state.beixuanArr.map((item, i) => {
-                            return <span
-                                key={i}
-                            >
-                                {columnsMap[item].title}
-                                <b
-                                    onClick={()=>{
-                                        this.setState({
-                                            'columnArr':[...this.state.columnArr, item],
-                                            'beixuanArr': this.state.beixuanArr.filter(_item => item !== _item)
-                                        });
-                                    }}
+                        this.state.beixuanArr.map((item, i)=>{
+                            return (
+                                <span
+                                    key={i}
                                 >
-                                    <Icon type="plus"/>
-                                </b>
-                            </span>;
+                                    {columnsMap[item].title}
+                                    <b
+                                        onClick={()=>{
+                                            this.setState({
+                                                beixuanArr:this.state.beixuanArr.filter(_item=>{
+                                                    return item !== _item;
+                                                }),
+                                                columns:[...this.state.columns, item]
+                                            });
+                                        }}
+                                    >
+                                        <Icon type='plus'/>
+                                    </b>
+                                </span>
+                            );
                         })
                     }
+                    <div style={{'clear':'both'}}></div>
                 </div>
-                <div style={{'clear':'both'}}></div>
-                <div>
+                <div style={{'textAlign':'right'}}>
                     <Button
-                        onClick={ ()=>{
-                            this.props.cancelHandler(this.state.columnArr);
+                        style={{'marginRight':'10px'}}
+                        onClick={()=>{
+                            this.props.cancelHandle();
                         }}
                     >取消</Button>
-                    <Button onClick={ ()=>{
-                        this.props.okHandler(this.state.columnArr);
-                    }}>确定</Button>
+                    <Button
+                        type='primary'
+                        onClick={()=>{
+                            this.props.okHandle(this.state.columns);
+                        }}
+                    >确认</Button>
                 </div>
             </div>
         );

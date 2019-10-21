@@ -1,53 +1,84 @@
 ﻿import axios from 'axios';
+import querystring from 'querystring';
 export default {
-    //命名空间
     namespace:'bigtable',
-    //数据
-    state : {
-        current:1,
-        columnArr:[],
-        results:[]
+    state:{
+        'current':1,
+        'columns':[],
+        'results':[],
+        //筛选
+        'color':[],
+        'exhaust':[],
+        'fuel':[],
+        'engine':[],
+        'total':0
     },
     reducers:{
-        changeColumns (state, {columnArr}) {
+        changeColumns (state, {columns}) {
             return {
                 ...state,
-                columnArr
+                columns
             };
         },
-        changeResults (state, {results}){
+        changeResults (state, {results, total}) {
             return {
                 ...state,
-                results
+                results,
+                total
+            };
+        },
+        changeFilter (state, {k, v}) {
+            return {
+                ...state,
+                [k]: v
+            };
+        },
+        changeCurrent (state, {current}) {
+            return {
+                ...state,
+                current
             };
         }
     },
     effects:{
         *getColumnsFromLocalStorage (action, {put}) {
-            //试着从本地存储中读取column字段
-            const columnsFromLocalStorage = localStorage.getItem('columns');
-            //如果这个字段读取出来时null,表示用户第一次来本网站或者清空缓存
-            if (columnsFromLocalStorage === null) {
-                //第一次进入，给用户本地赋予一个值
-                localStorage.setItem('columns', JSON.stringify(['image', 'id', 'brand', 'series', 'color']));
+            //获取本地存储中的列
+            let columns = localStorage.getItem('columns');
+            if (columns === null) {
+                localStorage.setItem('columns', '["id", "img", "brand", "fuel", "price"]');
             }
-            //再次从本地存储列表存储信息，并转换
-            const columnArr = JSON.parse(localStorage.getItem('columns'));
-            //将数据字典转为数组
-            // console.log(columnArr);
-            yield put({'type':'changeColumns', columnArr});
+            //["id","brand"],这是一个字符串，将字符串转为数组，使用JSON.parse
+            columns = JSON.parse(columns);
+            yield put({'type':'changeColumns', columns});
         },
-        *setColunmsToLocalStorage ({columnArr}, {put}) {
-            // console.log(12345);
-            // console.log(columnArr);
-            //设置本地存储
-            localStorage.setItem('columns', JSON.stringify(columnArr));
-            yield put({'type':'changeColumns', columnArr});
+        *setColumnsToLocalStorage ({columns}, {put}) {
+            //将用户选择的列，存储到本地
+            localStorage.setItem('columns', JSON.stringify(columns));
+            //再从本地中获取数据
+            yield put({'type':'getColumnsFromLocalStorage'});
         },
-        //读取ajax
-        *init (action, {put}){
-            const {results, total} = yield axios.get('/api/car').then(data=>data.data);
-            yield put({'type': 'changeResults', results});
+        //通过ajax获取表格数据
+        *initTableData (action, {put, select}) {
+            const {current, color, exhaust, fuel, engine} = yield select(({bigtable})=>bigtable);
+            const {results, total} = yield axios.get('http://www.aiqianduan.com:7897/cars?'
+            + querystring.stringify({
+                'page':current,
+                'color':color.join('v'),
+                'exhaust':exhaust.join('v'),
+                'fuel':fuel.join('v'),
+                'engine':engine.join('v')
+            })).then(data=>data.data);
+            yield put({'type':'changeResults', results, total});
+        },
+        //分页
+        *changeCurrentHandle ({current}, {put}) {
+            yield put({'type':'changeCurrent', current});
+            yield put({'type':'initTableData'});
+        },
+        *changeFilterSaga ({k, v}, {put}){
+            yield put({'type':'changeFilter', k, v});
+            yield put({'type':'initTableData'});
+            yield put({'type':'changeCurrent', 'current':1});
         }
     }
 };
