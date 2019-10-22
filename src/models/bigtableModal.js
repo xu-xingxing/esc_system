@@ -11,7 +11,14 @@ export default {
         'exhaust':[],
         'fuel':[],
         'engine':[],
-        'total':0
+        'buydate':[],
+        //所有品牌
+        'allbs':[],
+        'brand':'',
+        'series':'',
+        'total':0,
+        'price':[0, 120],
+        'km':[0, 2000000]
     },
     reducers:{
         changeColumns (state, {columns}) {
@@ -38,6 +45,12 @@ export default {
                 ...state,
                 current
             };
+        },
+        loadAllBs (state, {allbs}){
+            return {
+                ...state,
+                allbs
+            };
         }
     },
     effects:{
@@ -59,14 +72,19 @@ export default {
         },
         //通过ajax获取表格数据
         *initTableData (action, {put, select}) {
-            const {current, color, exhaust, fuel, engine} = yield select(({bigtable})=>bigtable);
-            const {results, total} = yield axios.get('http://www.aiqianduan.com:7897/cars?'
+            const {current, color, exhaust, fuel, engine, buydate, brand, series, price, km} = yield select(({bigtable})=>bigtable);
+            const {results, total} = yield axios.get('/api/car?'
             + querystring.stringify({
                 'page':current,
                 'color':color.join('v'),
                 'exhaust':exhaust.join('v'),
                 'fuel':fuel.join('v'),
-                'engine':engine.join('v')
+                'engine':engine.join('v'),
+                'buydate':buydate.join('to'),
+                'price':price.join('to'),
+                'km':km.join('to'),
+                brand,
+                series
             })).then(data=>data.data);
             yield put({'type':'changeResults', results, total});
         },
@@ -75,10 +93,21 @@ export default {
             yield put({'type':'changeCurrent', current});
             yield put({'type':'initTableData'});
         },
+        //改变筛选条件
         *changeFilterSaga ({k, v}, {put}){
             yield put({'type':'changeFilter', k, v});
+            //如果改变的是brand，那么要多一次put，把品牌弄掉（应对的情况是，直接点brand的tag的叉
+            if (k === 'brand') {
+                yield put({'type': 'changeFilter', 'k': 'series', 'v': ''});
+            }
+            //重新拉取
             yield put({'type':'initTableData'});
             yield put({'type':'changeCurrent', 'current':1});
+        },
+        //加载品牌和车系
+        *loadAllBsSaga (aciton, {put}){
+            const allbs = yield axios.get('/api/allbs').then(data=>data.data);
+            yield put({'type': 'loadAllBs', allbs});
         }
     }
 };

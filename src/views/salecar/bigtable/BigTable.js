@@ -8,6 +8,7 @@ import ModalInner from './ModalInner.js';
 import FilterBox from './FilterBox.js';
 import Tags from './Tags.js';
 
+
 //引入数据字典
 import columnsMap from './columnsMap';
 
@@ -67,7 +68,6 @@ export default class BigTable extends Component {
                         }}
                     />
                 </p>
-                <Tags/>
                 <FilterBox />
                 <Table
                     rowKey='id'

@@ -1,5 +1,9 @@
 import React, {Component} from 'react';
 import OneSingleMultiChoise from './OneSingleMultiChoise.js';
+import BuyDataFilter from './BuyDataFilter.js';
+import BSFilter from './BSFilter.js';
+import Tags from './Tags.js';
+import PriceKm from './PriceKm.js';
 
 export default class FilterBox extends Component {
     render () {
@@ -11,6 +15,10 @@ export default class FilterBox extends Component {
         };
         return (
             <div>
+                <Tags />
+                <BSFilter
+                    {...spans}
+                />
                 <OneSingleMultiChoise
                     {...spans}
                     k={'color'}
@@ -34,6 +42,13 @@ export default class FilterBox extends Component {
                     k={'engine'}
                     c={'发动机'}
                     options = {['1.6L', '1.6T', '1.8L', '2.0L']}
+                />
+                <BuyDataFilter
+                    {...spans}
+                    c={'购买日期'}
+                />
+                <PriceKm
+                    {...spans}
                 />
             </div>
         );

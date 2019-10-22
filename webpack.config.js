@@ -65,11 +65,11 @@ module.exports = {
             warnings: true,
             errors: true
         },
-        // proxy: {
-        //     '/api': {
-        //         target: 'http://192.168.2.250:3000',
-        //         pathRewrite: { '^/api': '' }
-        //     }
-        // }
+        proxy: {
+            '/api': {
+                target: 'http://192.168.2.250:3000',
+                pathRewrite: { '^/api': '' }
+            }
+        }
     }
 }

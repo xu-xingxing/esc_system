@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 //暴露一个json
 export default {
     'id':{
@@ -7,11 +8,11 @@ export default {
     'brand':{
         'title':'品牌'
     },
-    'img':{
+    'image':{
         'title':'图片',
         'render':(txt, {id})=>{
             return <div>
-                <img key={id} src={`http://aiqianduan.com:7897/images/carimages_small/${id}/view/${txt}`}/>
+                <img key={id} src={`/api/images/carimages_small/${id}/view/${txt}`}/>
             </div>;
         }
     },
@@ -22,7 +23,12 @@ export default {
         'title':'尾气'
     },
     'buydate':{
-        'title':'购买日期'
+        'title':'购买日期',
+        'render':(txt)=>{
+            return <div>
+                {moment(txt).format('YYYY年MM月DD日')}
+            </div>;
+        }
     },
     'engine':{
         'title':'发动机'
@@ -31,7 +37,12 @@ export default {
         'title':'变速箱'
     },
     'km':{
-        'title':'公里'
+        'title':'公里',
+        'render':(txt)=>{
+            return <div>
+                {txt.toString().replace(/\B(?=(...)+$)/g, ',')}
+            </div>;
+        }
     },
     'color':{
         'title':'颜色'
