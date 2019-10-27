@@ -6,7 +6,7 @@ import {connect} from 'dva';
 import './bigtable.less';
 import ModalInner from './ModalInner.js';
 import FilterBox from './FilterBox.js';
-import Tags from './Tags.js';
+import LR from '../../../layouts/LR';
 
 
 //引入数据字典
@@ -30,7 +30,7 @@ export default class BigTable extends Component {
     }
     render () {
         return (
-            <div>
+            <LR>
                 <Modal
                     title='请您选择需要看的列'
                     visible={this.state.isShowModal}
@@ -90,7 +90,7 @@ export default class BigTable extends Component {
                         }
                     }}
                 />
-            </div>
+            </LR>
         );
     }
 }

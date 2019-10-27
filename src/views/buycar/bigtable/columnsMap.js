@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import {Link} from 'dva/router';
 //暴露一个json
 export default {
     'id':{
@@ -12,7 +13,9 @@ export default {
         'title':'图片',
         'render':(txt, {id})=>{
             return <div>
-                <img key={id} src={`/api/images/carimages_small/${id}/view/${txt}`}/>
+                <Link to={'/buycar/bigtable/' + id}>
+                    <img key={id} src={`http://www.aiqianduan.com:7897/images/carimages_small/${id}/view/${txt}`}/>
+                </Link>
             </div>;
         }
     },
